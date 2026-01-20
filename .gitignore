@@ -1,0 +1,15 @@
+# Pastas de dependências
+node_modules/
+
+# Pasta de compilação
+dist/
+build/
+
+# Ficheiros de sistema e ambiente
+.env
+.env.local
+.DS_Store
+Thumbs.db
+
+# Configs do VS Code
+.vscode/
