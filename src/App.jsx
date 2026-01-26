@@ -17,6 +17,11 @@ function App() {
   const mediaRecorderRef = useRef(null);
   const audioChunksRef = useRef([]);
 
+  //video
+  const [gravandoVideo, setGravandoVideo] = useState(false);
+  const videoRef = useRef(null); // Para o preview da câmera
+  const [videoBlob, setVideoBlob] = useState(null);
+
   const [dados, setDados] = useState({
     nome: "",
     tipo: "",
@@ -109,6 +114,48 @@ function App() {
     }
   };
 
+  //gravar video
+  const iniciarVideo = async () => {
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({
+        video: true,
+        audio: true,
+      });
+      videoRef.current.srcObject = stream;
+
+      mediaRecorderRef.current = new MediaRecorder(stream);
+      audioChunksRef.current = [];
+
+      mediaRecorderRef.current.ondataavailable = (e) => {
+        if (e.data.size > 0) audioChunksRef.current.push(e.data);
+      };
+
+      mediaRecorderRef.current.onstop = async () => {
+        const blob = new Blob(audioChunksRef.current, { type: "video/mp4" });
+        setVideoBlob(blob);
+        const url = URL.createObjectURL(blob);
+
+        // Para a câmera após gravar
+        stream.getTracks().forEach((track) => track.stop());
+
+        enviarMensagem("📹 Vídeo anexado ao relato", false, null, null, url);
+      };
+
+      mediaRecorderRef.current.start();
+      setGravandoVideo(true);
+    } catch (err) {
+      alert("Não consegui acessar a câmera.");
+    }
+  };
+
+  const pararVideo = () => {
+    if (mediaRecorderRef.current && gravandoVideo) {
+      mediaRecorderRef.current.stop();
+      setGravandoVideo(false);
+      videoRef.current.srcObject = null;
+    }
+  };
+
   const pararGravacao = () => {
     if (mediaRecorderRef.current && gravando) {
       mediaRecorderRef.current.stop();
@@ -183,101 +230,62 @@ function App() {
     isAnonimo = false,
     imgFile = null,
     audioBlob = null,
+    videoUrl = null,
   ) => {
     const texto = textoManual || input;
-    if (!texto.trim() && !imgFile && !audioBlob) return;
+    // Se não houver texto nem mídia, não faz nada
+    if (!texto.trim() && !imgFile && !audioBlob && !videoUrl) return;
 
-    // UI: Mostra o balão imediatamente
-    const urlPreview = imgFile
-      ? URL.createObjectURL(imgFile)
-      : audioBlob
-        ? URL.createObjectURL(audioBlob)
-        : null;
-    setMensagens((prev) => [
-      ...prev,
-      {
-        id: Date.now(),
-        texto,
-        remetente: "usuario",
-        imagem: imgFile ? urlPreview : null,
-        audio: audioBlob ? urlPreview : null,
-      },
-    ]);
+    const novoID = Date.now();
+    const novaMsg = {
+      id: novoID,
+      texto: texto || "",
+      remetente: "usuario",
+      imagem: imgFile ? URL.createObjectURL(imgFile) : null,
+      audio: audioBlob ? URL.createObjectURL(audioBlob) : null,
+      video: videoUrl || null, // Novo campo de vídeo
+    };
+
+    setMensagens((prev) => [...prev, novaMsg]);
     setInput("");
 
+    // Lógica da IZA responder
     setTimeout(async () => {
       let novaResposta = "";
       let novoFluxo = fluxo;
 
-      // FLUXO LINEAR SIMPLES
       if (fluxo === 0) {
         if (texto.toLowerCase().includes("anônimo") || isAnonimo) {
           setAnonimo(true);
-          setDados((prev) => ({ ...prev, nome: "Anônimo" }));
+          setDados((p) => ({ ...p, nome: "Anônimo" }));
           novaResposta =
-            "Entendido! O que deseja registrar hoje? (Escolha uma opção abaixo)";
+            "Entendido! O que deseja registrar hoje? (Escolha abaixo)";
         } else {
-          setDados((prev) => ({ ...prev, nome: texto }));
+          setDados((p) => ({ ...p, nome: texto }));
           novaResposta = `Prazer, ${texto}! O que deseja registrar hoje?`;
         }
         novoFluxo = 1;
       } else if (fluxo === 1) {
-        setDados((prev) => ({ ...prev, tipo: texto }));
-        novaResposta = `Certo. **Onde** aconteceu isso? (Você pode usar o GPS abaixo)`;
+        setDados((p) => ({ ...p, tipo: texto }));
+        novaResposta = "Certo. **Onde** aconteceu isso? (Use o GPS abaixo)";
         novoFluxo = 2;
       } else if (fluxo === 2) {
-        setDados((prev) => ({ ...prev, local: texto }));
-        novaResposta = `Entendido. Agora, descreva **o que aconteceu**. \n\nVocê pode **segurar o microfone** para contar a história, digitar aqui ou mandar fotos:`;
+        setDados((p) => ({ ...p, local: texto }));
+        novaResposta =
+          "Entendido. Agora, descreva **o que aconteceu**. \n\nVocê pode usar o **microfone** ou a **filmadora** para relatar:";
         novoFluxo = 3;
       } else if (fluxo === 3) {
         if (texto === "CONFIRMADO") {
           const numProtocolo = Math.floor(
             Math.random() * 900000 + 100000,
           ).toString();
-
-          try {
-            let urlPublica = null;
-
-            // Se houver áudio, esperamos o upload terminar para pegar a URL
-            if (dados.relatoAudio) {
-              urlPublica = await uploadParaStorage(dados.relatoAudio, "audios");
-            }
-
-            console.log(
-              "Preparando inserção no banco com protocolo:",
-              numProtocolo,
-            );
-
-            const { error } = await supabase.from("manifestacoes").insert([
-              {
-                protocolo: numProtocolo,
-                nome: anonimo ? "Anônimo" : dados.nome || "Cidadão",
-                tipo: dados.tipo || "Relato",
-                localizacao: dados.local || "Não informado",
-                relato: dados.relato || "Relato via áudio",
-                anonimo: anonimo,
-                arquivo_url: urlPublica || null, 
-              },
-            ]);
-
-            if (error) {
-              console.error("ERRO NO INSERT DO BANCO:", error.message);
-              alert("Erro no Banco: " + error.message);
-              return;
-            }
-
-            setDados((prev) => ({ ...prev, protocolo: numProtocolo }));
-            setEtapa("protocolo");
-          } catch (err) {
-            console.error("ERRO GERAL:", err);
-            alert("Erro crítico. Verifique o console (F12).");
-          }
-        }
-        // ETAPA B: Se o usuário apenas digitou o texto do relato e deu Enter
-        else {
-          setDados((prev) => ({ ...prev, relato: texto }));
+          setDados((p) => ({ ...p, protocolo: numProtocolo }));
+          setEtapa("protocolo");
+          return;
+        } else {
+          setDados((p) => ({ ...p, relato: texto }));
           novaResposta =
-            "Perfeito, anotei seu relato. Você pode enviar mais detalhes ou clicar no botão verde abaixo para concluir o registro oficial.";
+            "Anotei seu relato. Clique no botão verde abaixo para finalizar.";
         }
       }
 
@@ -453,6 +461,13 @@ function App() {
               >
                 COMEÇAR
               </button>
+
+              <button
+                onClick={() => setEtapa("consulta")}
+                className="w-full py-3 mt-3 rounded-2xl font-bold border-2 border-[#005594] text-[#005594] hover:bg-blue-50 transition-all"
+              >
+                CONSULTAR PROTOCOLO
+              </button>
             </div>
           </div>
         ) : etapa === "chat" ? (
@@ -475,6 +490,21 @@ function App() {
                     )}
                     {msg.audio && (
                       <audio controls src={msg.audio} className="w-full mb-2" />
+                    )}
+                    {gravandoVideo && (
+                      <video
+                        ref={videoRef}
+                        autoPlay
+                        muted
+                        className="fixed top-24 left-1/2 -translate-x-1/2 w-48 h-48 rounded-full border-4 border-red-500 object-cover z-50 shadow-2xl"
+                      />
+                    )}
+                    {msg.video && (
+                      <video
+                        controls
+                        src={msg.video}
+                        className="w-full rounded-lg mb-2"
+                      />
                     )}
                     <p className="whitespace-pre-line leading-relaxed">
                       {renderizarTexto(msg.texto)}
@@ -584,6 +614,14 @@ function App() {
                 🎙️
               </button>
 
+              <button
+                onClick={gravandoVideo ? pararVideo : iniciarVideo}
+                className={`p-2 rounded-full text-xl ${fluxo === 3 ? (gravandoVideo ? "bg-red-500 text-white animate-pulse" : "bg-gray-100") : "opacity-20"}`}
+                aria-label="Gravar vídeo do problema"
+              >
+                📹
+              </button>
+
               <input
                 type="file"
                 ref={fileInputRef}
@@ -614,6 +652,44 @@ function App() {
                 className={`px-4 py-2 rounded-xl font-bold ${cores.botaoPrincipal}`}
               >
                 ENVIAR
+              </button>
+            </div>
+          </div>
+        ) : etapa === "consulta" ? (
+          <div className="text-center w-full animate-fadeIn">
+            <div
+              className={`${cores.card} p-8 rounded-3xl border-t-[10px] border-blue-500 shadow-2xl`}
+            >
+              <h2 className="text-xl font-black mb-6">Acompanhar Relato</h2>
+              <input
+                type="text"
+                placeholder="Protocolo"
+                value={protocoloBusca}
+                onChange={(e) => setProtocoloBusca(e.target.value)}
+                className="w-full p-4 border-2 rounded-2xl text-center mb-4"
+              />
+              <button
+                onClick={buscarProtocolo}
+                className="w-full py-4 rounded-2xl font-black text-white bg-[#005594]"
+              >
+                {buscando ? "BUSCANDO..." : "PESQUISAR"}
+              </button>
+              {resultadoBusca && (
+                <div className="mt-8 text-left bg-blue-50 p-6 rounded-2xl border border-blue-100">
+                  <p>
+                    <strong>Status:</strong> Em análise
+                  </p>
+                  <p>
+                    <strong>Tipo:</strong> {resultadoBusca.tipo}
+                  </p>
+                  <p className="italic text-sm">"{resultadoBusca.relato}"</p>
+                </div>
+              )}
+              <button
+                onClick={() => setEtapa("inicio")}
+                className="mt-6 text-gray-500 underline text-sm"
+              >
+                Voltar
               </button>
             </div>
           </div>
