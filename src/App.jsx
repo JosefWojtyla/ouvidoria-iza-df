@@ -520,122 +520,221 @@ function App() {
             </div>
           </div>
         ) : etapa === "chat" ? (
-          <div className="flex flex-col h-[85vh] w-full">
-            <div className="flex-1 overflow-y-auto space-y-4 pr-2 pb-24 mt-4">
+          /* CONTAINER PRINCIPAL 
+     Usamos 'relative' para os botões flutuantes e 'h-[88vh]' para garantir 
+     que ele ocupe quase a tela toda, deixando espaço para o header.
+  */
+          <div className="relative flex flex-col h-[88vh] w-full overflow-hidden bg-gray-50">
+            {/* CAMADA 1: ÁREA DE ROLAGEM (SCROLL)
+        Aqui ficam as mensagens e os botões que fazem parte do "histórico".
+        O 'pb-48' no final garante que a última mensagem não fique escondida atrás dos botões.
+    */}
+            <div className="flex-1 overflow-y-auto space-y-4 p-4 pb-48 mt-2 custom-scrollbar">
+              {mensagens.map((msg) => (
+                <div
+                  key={msg.id}
+                  className={`flex ${msg.remetente === "iza" ? "justify-start" : "justify-end"} animate-fadeIn`}
+                >
+                  <div
+                    className={`max-w-[85%] p-4 rounded-2xl shadow-sm ${
+                      msg.remetente === "iza"
+                        ? "bg-white border-l-4 border-[#005594] text-gray-800"
+                        : "bg-[#005594] text-white rounded-br-none"
+                    }`}
+                  >
+                    {/* Anexos de Mídia na Mensagem */}
+                    {msg.imagem && (
+                      <img
+                        src={msg.imagem}
+                        alt="Anexo"
+                        className="w-full rounded-lg mb-2 shadow-sm"
+                      />
+                    )}
+                    {msg.audio && (
+                      <audio controls src={msg.audio} className="w-full mb-2" />
+                    )}
+                    {msg.video && (
+                      <video
+                        controls
+                        src={msg.video}
+                        className="w-full rounded-lg mb-2 shadow-sm"
+                      />
+                    )}
 
+                    <p className="whitespace-pre-line leading-relaxed text-sm md:text-base">
+                      {renderizarTexto(msg.texto)}
+                    </p>
+                  </div>
+                </div>
+              ))}
+
+              {/* BOTÕES DE DECISÃO (Aparecem dentro do chat conforme o fluxo) */}
+
+              {/* Fluxo 0: Identificação */}
               {fluxo === 0 && (
-                <div className="grid grid-cols-1 gap-2 mt-4">
-                  {" "}
-                  {/* Mudei para 1 coluna */}
+                <div className="flex flex-col gap-2 mt-4 px-2">
                   <button
                     onClick={() => enviarMensagem("Anônimo", true)}
-                    className="bg-gray-800 text-white py-4 rounded-xl font-bold shadow-lg active:scale-95 transition-all"
+                    className="w-full bg-gray-800 text-white py-4 rounded-xl font-bold shadow-lg active:scale-95 transition-all"
                   >
                     👤 SEGUIR COMO ANÔNIMO
                   </button>
                 </div>
               )}
 
+              {/* Fluxo 1: Escolha da Categoria */}
               {fluxo === 1 &&
-                mensagens[mensagens.length - 1].remetente === "iza" && (
-                  <div className="grid grid-cols-1 gap-2 mt-2">
-                    {["🚨 Reclamação", "👏 Elogio", "⚖️ Denúncia"].map(
-                      (opt) => (
-                        <button
-                          key={opt}
-                          onClick={() => enviarMensagem(opt)}
-                          className="bg-white border-2 border-blue-900 text-blue-900 py-3 rounded-xl font-bold"
-                        >
-                          {opt}
-                        </button>
-                      ),
-                    )}
+                mensagens[mensagens.length - 1]?.remetente === "iza" && (
+                  <div className="grid grid-cols-1 gap-2 mt-2 px-2 text-sm">
+                    {[
+                      "🚨 Reclamação",
+                      "👏 Elogio",
+                      "⚖️ Denúncia",
+                      "💡 Sugestão",
+                    ].map((opt) => (
+                      <button
+                        key={opt}
+                        onClick={() => enviarMensagem(opt)}
+                        className="bg-white border-2 border-[#005594] text-[#005594] py-3 rounded-xl font-bold hover:bg-blue-50 active:scale-95 transition-all"
+                      >
+                        {opt}
+                      </button>
+                    ))}
                   </div>
                 )}
 
+              {/* Fluxo 2: Localização */}
               {fluxo === 2 &&
-                mensagens[mensagens.length - 1].remetente === "iza" && (
-                  <button
-                    onClick={pegarLocalizacaoReal}
-                    disabled={localizando}
-                    className="w-full mt-2 py-4 rounded-xl font-black bg-blue-50 text-blue-900 border-2 border-blue-900 animate-pulse"
-                  >
-                    📍{" "}
-                    {localizando ? "OBTENDO ENDEREÇO..." : "USAR MEU GPS REAL"}
-                  </button>
-                )}
-              {fluxo === 3 &&
-                (dados.relato || dados.relatoAudio) &&
-                !gravando && (
-                  <div className="p-4 animate-fadeIn">
-                    <div className="bg-blue-50 border-l-4 border-blue-500 p-3 mb-4 rounded-r-xl">
-                      <p className="text-xs text-blue-800 font-bold">
-                        IZA: Tudo pronto! revise seu relato acima e clique no
-                        botão para finalizar.
-                      </p>
-                    </div>
-
+                mensagens[mensagens.length - 1]?.remetente === "iza" && (
+                  <div className="px-2">
                     <button
-                      onClick={() => enviarMensagem("CONFIRMADO")}
-                      className="w-full py-4 bg-green-600 text-white rounded-2xl font-black shadow-lg hover:bg-green-700 active:scale-95 transition-all"
+                      onClick={pegarLocalizacaoReal}
+                      disabled={localizando}
+                      className="w-full mt-2 py-4 rounded-xl font-black bg-blue-50 text-[#005594] border-2 border-[#005594] animate-pulse shadow-md"
                     >
-                      ✅ FINALIZAR E GERAR PROTOCOLO
+                      📍{" "}
+                      {localizando
+                        ? "OBTENDO ENDEREÇO..."
+                        : "USAR MEU GPS REAL"}
                     </button>
-                    <p className="text-[10px] text-center mt-2 text-gray-500 uppercase tracking-widest">
-                      Documento com validade jurídica
-                    </p>
                   </div>
                 )}
+
+              {/* Âncora para o Scroll Automático */}
               <div ref={scrollRef} />
             </div>
 
-            <div className="bg-white p-3 rounded-2xl shadow-2xl flex gap-2 items-center fixed bottom-4 max-w-lg w-[92%] mx-auto left-0 right-0 border border-gray-200">
-              {/* CÂMERA: Desabilitada até o fluxo 3 */}
-              <button
-                onClick={() =>
-                  fluxo === 3
-                    ? fileInputRef.current.click()
-                    : alert(
-                        "A IZA ainda está te ouvindo! Envie a foto na etapa final do relato.",
-                      )
+            {/* CAMADA 2: ELEMENTOS FLUTUANTES (FIXOS)
+        Estes elementos não rolam com o chat. Eles ficam "colados" na tela.
+    */}
+
+            {/* Preview de Vídeo: Aparece no topo enquanto o usuário grava */}
+            {gravandoVideo && (
+              <div className="fixed top-20 left-0 right-0 flex justify-center z-50 pointer-events-none">
+                <video
+                  ref={videoRef}
+                  autoPlay
+                  muted
+                  className="w-48 h-48 rounded-full border-4 border-red-500 object-cover shadow-2xl animate-pulse pointer-events-auto bg-black"
+                />
+              </div>
+            )}
+
+            {/* Botão de Finalizar: Fica "levitando" acima da barra de input no Fluxo 3 */}
+            {fluxo === 3 &&
+              (dados.relato || dados.relatoAudio || videoBlob) &&
+              !gravando &&
+              !gravandoVideo && (
+                <div className="fixed bottom-24 left-1/2 -translate-x-1/2 w-[92%] max-w-lg z-40 animate-slideUp">
+                  <div className="bg-[#005594] text-white p-2 mb-[-2px] rounded-t-xl text-center text-[10px] font-bold uppercase tracking-wider shadow-lg">
+                    IZA: Tudo pronto! Clique para concluir:
+                  </div>
+                  <button
+                    onClick={() => enviarMensagem("CONFIRMADO")}
+                    className="w-full py-4 bg-green-600 text-white rounded-b-xl rounded-t-none font-black shadow-2xl border-t-2 border-white/20 active:scale-95 transition-all flex items-center justify-center gap-2"
+                  >
+                    ✅ FINALIZAR E PEGAR COMPROVANTE
+                  </button>
+                </div>
+              )}
+
+            {/* CAMADA 3: BARRA DE INPUT (FIXA NO RODAPÉ)
+             */}
+            <div className="fixed bottom-4 left-1/2 -translate-x-1/2 w-[94%] max-w-lg bg-white p-3 rounded-2xl shadow-[0_-10px_25px_-5px_rgba(0,0,0,0.1)] flex gap-2 items-center border border-gray-100 z-50">
+              {/* Botões de Mídia Lateral */}
+              <div className="flex gap-1">
+                {/* Botão de Foto */}
+                <button
+                  onClick={() =>
+                    fluxo === 3
+                      ? fileInputRef.current.click()
+                      : alert("Aguarde a etapa final")
+                  }
+                  className={`p-2 rounded-full text-xl transition-all ${fluxo === 3 ? "bg-gray-100 hover:bg-gray-200" : "opacity-20 grayscale cursor-not-allowed"}`}
+                >
+                  📷
+                </button>
+
+                {/* Botão de Áudio com Touch Fix para Celular */}
+                <button
+                  onMouseDown={fluxo === 3 ? iniciarGravacao : null}
+                  onMouseUp={fluxo === 3 ? pararGravacao : null}
+                  onTouchStart={(e) => {
+                    e.preventDefault();
+                    if (fluxo === 3) iniciarGravacao();
+                  }}
+                  onTouchEnd={(e) => {
+                    e.preventDefault();
+                    if (fluxo === 3) pararGravacao();
+                  }}
+                  className={`p-2 rounded-full text-xl transition-all ${
+                    fluxo === 3
+                      ? gravando
+                        ? "bg-red-500 text-white scale-110 shadow-inner"
+                        : "bg-gray-100 text-gray-600 hover:bg-gray-200"
+                      : "opacity-20 grayscale cursor-not-allowed"
+                  }`}
+                >
+                  🎙️
+                </button>
+
+                {/* Botão de Vídeo */}
+                <button
+                  onClick={gravandoVideo ? pararVideo : iniciarVideo}
+                  className={`p-2 rounded-full text-xl transition-all ${
+                    fluxo === 3
+                      ? gravandoVideo
+                        ? "bg-red-600 text-white animate-pulse"
+                        : "bg-gray-100 hover:bg-gray-200"
+                      : "opacity-20 grayscale cursor-not-allowed"
+                  }`}
+                >
+                  📹
+                </button>
+              </div>
+
+              {/* Campo de Texto */}
+              <input
+                type="text"
+                value={input}
+                onChange={(e) => setInput(e.target.value)}
+                onKeyPress={(e) => e.key === "Enter" && enviarMensagem()}
+                placeholder={
+                  fluxo === 3 ? "Descreva o ocorrido..." : "Responda a IZA..."
                 }
-                className={`p-2 rounded-full text-xl transition-all ${fluxo === 3 ? "bg-gray-100 hover:bg-gray-200" : "opacity-20 grayscale"}`}
-                title="Anexar foto"
-              >
-                📷
-              </button>
+                className="flex-1 p-2 outline-none text-sm bg-transparent"
+                disabled={gravando || gravandoVideo}
+              />
 
-              {/* MICROFONE: Desabilitado até o fluxo 3 */}
+              {/* Botão Enviar */}
               <button
-                onMouseDown={fluxo === 3 ? iniciarGravacao : null}
-                onMouseUp={fluxo === 3 ? pararGravacao : null}
-                onTouchStart={(e) => {
-                  e.preventDefault();
-                  if (fluxo === 3) iniciarGravacao();
-                }}
-                onTouchEnd={(e) => {
-                  e.preventDefault();
-                  if (fluxo === 3) pararGravacao();
-                }}
-                className={`p-2 rounded-full text-xl transition-all ${
-                  fluxo === 3
-                    ? gravando
-                      ? "wave-active text-white scale-125"
-                      : "bg-gray-100 text-gray-600"
-                    : "opacity-20 grayscale cursor-not-allowed"
-                }`}
+                onClick={() => enviarMensagem()}
+                className={`px-4 py-2 rounded-xl font-bold transition-all shadow-md active:scale-95 ${cores.botaoPrincipal}`}
               >
-                🎙️
+                ENVIAR
               </button>
 
-              <button
-                onClick={gravandoVideo ? pararVideo : iniciarVideo}
-                className={`p-2 rounded-full text-xl ${fluxo === 3 ? (gravandoVideo ? "bg-red-500 text-white animate-pulse" : "bg-gray-100") : "opacity-20"}`}
-                aria-label="Gravar vídeo do problema"
-              >
-                📹
-              </button>
-
+              {/* Input de Arquivo (Invisível) */}
               <input
                 type="file"
                 ref={fileInputRef}
@@ -646,27 +745,6 @@ function App() {
                 className="hidden"
                 accept="image/*"
               />
-
-              <input
-                type="text"
-                value={input}
-                onChange={(e) => setInput(e.target.value)}
-                onKeyPress={(e) => e.key === "Enter" && enviarMensagem()}
-                placeholder={
-                  fluxo === 3
-                    ? "Descreva aqui o ocorrido..."
-                    : "Responda a IZA..."
-                }
-                className="flex-1 p-2 outline-none"
-                disabled={gravando}
-              />
-
-              <button
-                onClick={() => enviarMensagem()}
-                className={`px-4 py-2 rounded-xl font-bold ${cores.botaoPrincipal}`}
-              >
-                ENVIAR
-              </button>
             </div>
           </div>
         ) : etapa === "consulta" ? (
