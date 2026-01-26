@@ -40,18 +40,6 @@ function App() {
     scrollRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [mensagens]);
 
-  // VLibras
-  useEffect(() => {
-    const script = document.createElement("script");
-    script.src = "https://vlibras.gov.br/app/vlibras-plugin.js";
-    script.async = true;
-    script.onload = () => {
-      if (window.VLibras)
-        new window.VLibras.Widget("https://vlibras.gov.br/app");
-    };
-    document.body.appendChild(script);
-  }, []);
-
   const renderizarTexto = (texto) => {
     const partes = texto.split(/(\*\*.*?\*\*)/g);
     return partes.map((parte, i) => {
