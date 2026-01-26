@@ -89,6 +89,12 @@ function App() {
       };
 
       mediaRecorderRef.current.onstop = async () => {
+        const tiposSuportados = ["video/mp4", "video/webm", "video/quicktime"];
+        const tipoCerto =
+          tiposSuportados.find((t) => MediaRecorder.isTypeSupported(t)) ||
+          "video/mp4";
+
+        const blob = new Blob(audioChunksRef.current, { type: tipoCerto });
         const audioBlob = new Blob(audioChunksRef.current, {
           type: "audio/wav",
         });
@@ -136,14 +142,29 @@ function App() {
       };
 
       mediaRecorderRef.current.onstop = async () => {
-        const blob = new Blob(audioChunksRef.current, { type: "video/mp4" });
-        setVideoBlob(blob);
-        const url = URL.createObjectURL(blob);
+        // 1. Identifica o formato que o celular suporta
+        const tiposSuportados = ["video/mp4", "video/webm", "video/quicktime"];
+        const tipoCerto =
+          tiposSuportados.find((t) => MediaRecorder.isTypeSupported(t)) ||
+          "video/mp4";
 
-        // Para a câmera após gravar
+        // 2. Cria o arquivo de VÍDEO (usando as "chunks" gravadas)
+        const blobVideo = new Blob(videoChunksRef.current, { type: tipoCerto });
+        setVideoBlob(blobVideo); // Salva no estado para o botão de finalizar saber que existe
+
+        const videoUrl = URL.createObjectURL(blobVideo);
+
+        // 3. Desliga a câmera e o microfone
         stream.getTracks().forEach((track) => track.stop());
 
-        enviarMensagem("📹 Vídeo anexado ao relato", false, null, null, url);
+        // 4. Manda para o chat (o 5º parâmetro é o videoUrl)
+        enviarMensagem(
+          "📹 Vídeo anexado ao relato",
+          false,
+          null,
+          null,
+          videoUrl,
+        );
       };
 
       mediaRecorderRef.current.start();
@@ -501,45 +522,6 @@ function App() {
         ) : etapa === "chat" ? (
           <div className="flex flex-col h-[85vh] w-full">
             <div className="flex-1 overflow-y-auto space-y-4 pr-2 pb-24 mt-4">
-              {mensagens.map((msg) => (
-                <div
-                  key={msg.id}
-                  className={`flex ${msg.remetente === "iza" ? "justify-start" : "justify-end"}`}
-                >
-                  <div
-                    className={`max-w-[85%] p-4 rounded-2xl ${msg.remetente === "iza" ? "bg-white border-l-4 border-blue-500 shadow-sm" : "bg-[#005594] text-white"}`}
-                  >
-                    {msg.imagem && (
-                      <img
-                        src={msg.imagem}
-                        alt="Anexo"
-                        className="w-full rounded-lg mb-2"
-                      />
-                    )}
-                    {msg.audio && (
-                      <audio controls src={msg.audio} className="w-full mb-2" />
-                    )}
-                    {gravandoVideo && (
-                      <video
-                        ref={videoRef}
-                        autoPlay
-                        muted
-                        className="fixed top-24 left-1/2 -translate-x-1/2 w-48 h-48 rounded-full border-4 border-red-500 object-cover z-50 shadow-2xl"
-                      />
-                    )}
-                    {msg.video && (
-                      <video
-                        controls
-                        src={msg.video}
-                        className="w-full rounded-lg mb-2"
-                      />
-                    )}
-                    <p className="whitespace-pre-line leading-relaxed">
-                      {renderizarTexto(msg.texto)}
-                    </p>
-                  </div>
-                </div>
-              ))}
 
               {fluxo === 0 && (
                 <div className="grid grid-cols-1 gap-2 mt-4">
@@ -627,6 +609,14 @@ function App() {
               <button
                 onMouseDown={fluxo === 3 ? iniciarGravacao : null}
                 onMouseUp={fluxo === 3 ? pararGravacao : null}
+                onTouchStart={(e) => {
+                  e.preventDefault();
+                  if (fluxo === 3) iniciarGravacao();
+                }}
+                onTouchEnd={(e) => {
+                  e.preventDefault();
+                  if (fluxo === 3) pararGravacao();
+                }}
                 className={`p-2 rounded-full text-xl transition-all ${
                   fluxo === 3
                     ? gravando
