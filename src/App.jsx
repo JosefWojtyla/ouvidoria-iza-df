@@ -12,6 +12,11 @@ function App() {
   const [anonimo, setAnonimo] = useState(false);
   const [localizando, setLocalizando] = useState(false);
 
+  //protocolo
+  const [protocoloBusca, setProtocoloBusca] = useState("");
+  const [resultadoBusca, setResultadoBusca] = useState(null);
+  const [buscando, setBuscando] = useState(false);
+
   // Estados para Áudio Real
   const [gravando, setGravando] = useState(false);
   const mediaRecorderRef = useRef(null);
@@ -29,6 +34,7 @@ function App() {
     relato: "",
     protocolo: "",
   });
+
   const [mensagens, setMensagens] = useState([
     {
       id: 1,
@@ -66,7 +72,7 @@ function App() {
     });
   };
 
-  // --- LÓGICA DE ÁUDIO REAL ---
+  // --- ÁUDIO ---
   const iniciarGravacao = async () => {
     try {
       console.log("Tentando acessar microfone...");
@@ -90,7 +96,6 @@ function App() {
 
         const audioUrl = URL.createObjectURL(audioBlob);
 
-        // ATENÇÃO AQUI: Guardamos o áudio E marcamos que há um relato
         setDados((prev) => ({ ...prev, relatoAudio: audioBlob }));
 
         setMensagens((prev) => [
@@ -163,12 +168,35 @@ function App() {
     }
   };
 
+  const buscarProtocolo = async () => {
+    const pLimpo = protocoloBusca.replace("#", "").trim();
+    if (!pLimpo) return;
+
+    setBuscando(true);
+    try {
+      const { data, error } = await supabase
+        .from("manifestacoes")
+        .select("*")
+        .eq("protocolo", pLimpo)
+        .maybeSingle(); // maybeSingle evita erro se não achar nada
+
+      if (error) throw error;
+      if (data) setResultadoBusca(data);
+      else alert("Protocolo não encontrado. Verifique o número.");
+    } catch (err) {
+      console.error("Erro na busca:", err.message);
+    } finally {
+      setBuscando(false);
+    }
+  };
+
   // --- FUNÇÃO AUXILIAR PARA UPLOAD (STORAGE) ---
   const uploadParaStorage = async (arquivo, pasta) => {
     if (!arquivo) return null;
     try {
       console.log(`Iniciando upload para a pasta ${pasta}...`);
-      const extensao = pasta === "audios" ? "wav" : "jpg";
+      const extensao =
+        pasta === "audios" ? "wav" : pasta === "videos" ? "mp4" : "jpg";
       const nomeArquivo = `${Date.now()}-${Math.random().toString(36).substring(7)}.${extensao}`;
       const caminho = `${pasta}/${nomeArquivo}`;
 
@@ -514,18 +542,14 @@ function App() {
               ))}
 
               {fluxo === 0 && (
-                <div className="grid grid-cols-2 gap-2 mt-4">
-                  <button
-                    onClick={() => enviarMensagem("Identificar")}
-                    className="bg-white border-2 border-blue-900 text-blue-900 py-3 rounded-xl font-bold"
-                  >
-                    Identificar
-                  </button>
+                <div className="grid grid-cols-1 gap-2 mt-4">
+                  {" "}
+                  {/* Mudei para 1 coluna */}
                   <button
                     onClick={() => enviarMensagem("Anônimo", true)}
-                    className="bg-gray-800 text-white py-3 rounded-xl font-bold"
+                    className="bg-gray-800 text-white py-4 rounded-xl font-bold shadow-lg active:scale-95 transition-all"
                   >
-                    Anônimo
+                    👤 SEGUIR COMO ANÔNIMO
                   </button>
                 </div>
               )}
@@ -656,40 +680,59 @@ function App() {
             </div>
           </div>
         ) : etapa === "consulta" ? (
+          /* TELA DE CONSULTA RECONSTRUÍDA */
           <div className="text-center w-full animate-fadeIn">
             <div
-              className={`${cores.card} p-8 rounded-3xl border-t-[10px] border-blue-500 shadow-2xl`}
+              className={`${cores?.card || "bg-white"} p-8 rounded-3xl border-t-[10px] border-blue-500 shadow-2xl`}
             >
               <h2 className="text-xl font-black mb-6">Acompanhar Relato</h2>
+
               <input
                 type="text"
-                placeholder="Protocolo"
-                value={protocoloBusca}
+                placeholder="Digite o protocolo"
+                value={protocoloBusca || ""} // O "||" evita erro se a variável for undefined
                 onChange={(e) => setProtocoloBusca(e.target.value)}
-                className="w-full p-4 border-2 rounded-2xl text-center mb-4"
+                className="w-full p-4 border-2 rounded-2xl text-center font-mono text-xl mb-4 text-black"
               />
+
               <button
-                onClick={buscarProtocolo}
-                className="w-full py-4 rounded-2xl font-black text-white bg-[#005594]"
+                onClick={() =>
+                  typeof buscarProtocolo === "function"
+                    ? buscarProtocolo()
+                    : alert(
+                        "Número de Protocolo não encontrado. Digite novamente",
+                      )
+                }
+                className="w-full py-4 rounded-2xl font-black text-white bg-[#005594] hover:opacity-90"
               >
                 {buscando ? "BUSCANDO..." : "PESQUISAR"}
               </button>
+
               {resultadoBusca && (
-                <div className="mt-8 text-left bg-blue-50 p-6 rounded-2xl border border-blue-100">
-                  <p>
-                    <strong>Status:</strong> Em análise
+                <div className="mt-8 text-left bg-blue-50 p-6 rounded-2xl border border-blue-100 animate-slideUp">
+                  <p className="text-blue-900 font-bold mb-2">
+                    Situação do seu relato:
                   </p>
-                  <p>
+                  <div className="bg-white p-3 rounded-xl border border-blue-200 mb-4 text-center">
+                    <span className="font-black text-[#005594] uppercase">
+                      {resultadoBusca.status || "Recebido"}
+                    </span>
+                  </div>
+
+                  <p className="text-sm">
                     <strong>Tipo:</strong> {resultadoBusca.tipo}
                   </p>
-                  <p className="italic text-sm">"{resultadoBusca.relato}"</p>
+                  <p className="italic text-sm mt-2">
+                    "{resultadoBusca.relato}"
+                  </p>
                 </div>
               )}
+
               <button
                 onClick={() => setEtapa("inicio")}
-                className="mt-6 text-gray-500 underline text-sm"
+                className="mt-6 text-gray-500 underline text-sm block mx-auto"
               >
-                Voltar
+                Voltar para o Início
               </button>
             </div>
           </div>
