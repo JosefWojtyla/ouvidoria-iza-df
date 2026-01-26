@@ -1,5 +1,5 @@
 import { defineConfig } from 'vite'
-import react from '@vitejs/plugin-react'
+import react from '@vitejs/plugin-react' // O segredo está aqui!
 import { VitePWA } from 'vite-plugin-pwa'
 
 export default defineConfig({
@@ -7,22 +7,29 @@ export default defineConfig({
     react(),
     VitePWA({
       registerType: 'autoUpdate',
-      devOptions: {
-        enabled: true 
-      },
+      includeAssets: ['favicon.ico', 'apple-touch-icon.png', 'masked-icon.svg'],
       manifest: {
-        name: 'Ouvidoria CGDF - IZA',
-        short_name: 'OuvidoriaDF',
-        description: 'Assistente Virtual da Ouvidoria do DF',
+        name: 'IZA - Ouvidoria Digital DF',
+        short_name: 'IZA',
+        description: 'Assistente Virtual de Ouvidoria do Distrito Federal',
         theme_color: '#005594',
+        background_color: '#ffffff',
+        display: 'standalone',
+        start_url: '/',
         icons: [
           {
-            src: 'https://cdn-icons-png.flaticon.com/512/2593/2593635.png', // Ícone temporário de robô
-            sizes: '512x512',
+            src: 'pwa-192x192.png',
+            sizes: '192x192',
             type: 'image/png'
+          },
+          {
+            src: 'pwa-512x512.png',
+            sizes: '512x512',
+            type: 'image/png',
+            purpose: 'any maskable'
           }
         ]
       }
     })
-  ],
+  ]
 })
