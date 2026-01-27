@@ -506,6 +506,13 @@ function App() {
           >
             A+
           </button>
+
+          <button
+            onClick={() => setFontSize(16)} // Define 16px como o padrão
+            className="p-2 rounded-lg font-bold text-[10px] bg-white/20 hover:bg-white/30"
+          >
+            RESET
+          </button>
         </div>
       </header>
 
@@ -520,18 +527,28 @@ function App() {
                 alt="IZA"
                 className="w-20 h-20 mx-auto mb-4"
               />
-              <h2 className="text-2xl font-black text-[#005594]">
+              <h2
+                className="font-black text-[#005594]"
+                style={{ fontSize: "1.5em" }} // 'em' faz ele ser 1.5x o tamanho que você definiu no botão A+
+              >
                 Oi, eu sou a IZA!
               </h2>
-              <div className="text-left p-4 rounded-xl my-6 text-xs bg-gray-50 border border-gray-200">
+              {/* Removemos o 'text-xs' da div abaixo */}
+              <div className="text-left p-4 rounded-xl my-6 bg-gray-50 border border-gray-200 shadow-sm">
                 <label className="flex items-start gap-3 cursor-pointer">
                   <input
                     type="checkbox"
                     checked={aceitoTermos}
                     onChange={(e) => setAceitoTermos(e.target.checked)}
-                    className="mt-1 w-5 h-5"
+                    className="mt-1 w-5 h-5 cursor-pointer"
                   />
-                  <span>Aceito os termos da **LGPD**.</span>
+                  {/* O texto agora usa 0.85em para ser um pouco menor que o padrão, mas relativo ao total */}
+                  <span
+                    className="leading-tight text-gray-700"
+                    style={{ fontSize: "0.85em" }}
+                  >
+                    Aceito os termos da LGPD.
+                  </span>
                 </label>
               </div>
               <button
@@ -541,7 +558,6 @@ function App() {
               >
                 COMEÇAR
               </button>
-
               <button
                 onClick={() => setEtapa("consulta")}
                 className="w-full py-3 mt-3 rounded-2xl font-bold border-2 border-[#005594] text-[#005594] hover:bg-blue-50 transition-all"
@@ -592,7 +608,10 @@ function App() {
                       />
                     )}
 
-                    <p className="whitespace-pre-line leading-relaxed text-sm md:text-base">
+                    <p
+                      className="whitespace-pre-line leading-relaxed"
+                      style={{ fontSize: "1em" }}
+                    >
                       {renderizarTexto(msg.texto)}
                     </p>
                   </div>
@@ -728,7 +747,6 @@ function App() {
                 >
                   🎙️
                 </button>
-
               </div>
 
               {/* Campo de Texto */}
