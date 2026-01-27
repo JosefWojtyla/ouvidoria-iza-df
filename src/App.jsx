@@ -287,7 +287,7 @@ function App() {
             relato: dadosRelato.relato || "Relato por mídia",
             tipo: dadosRelato.tipo,
             localizacao: dadosRelato.local, // Aqui resolvemos o problema da coluna!
-            status: "Recebido",
+            status: "Em análise",
           },
         ]);
 
