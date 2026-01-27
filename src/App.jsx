@@ -274,45 +274,63 @@ function App() {
     );
   };
 
+  const salvarNoSupabase = async (dadosRelato) => {
+    try {
+      // Console log para você ver no navegador se os dados estão certos antes de ir pro banco
+      console.log("Enviando para o banco:", dadosRelato);
+
+      const { error } = await supabase
+        .from("manifestacoes") // Nome da sua tabela
+        .insert([
+          {
+            protocolo: dadosRelato.protocolo,
+            relato: dadosRelato.relato || "Relato por mídia",
+            tipo: dadosRelato.tipo,
+            localizacao: dadosRelato.local, // Aqui resolvemos o problema da coluna!
+            status: "Recebido",
+          },
+        ]);
+
+      if (error) throw error;
+      console.log("✅ Sucesso! O protocolo já está no Supabase.");
+    } catch (err) {
+      console.error("❌ Erro ao salvar:", err.message);
+    }
+  };
+
   const enviarMensagem = async (
     textoManual,
     isAnonimo = false,
     imgFile = null,
     audioBlob = null,
-    videoUrl = null,
   ) => {
     const texto = textoManual || input;
-    // Se não houver texto nem mídia, não faz nada
-    if (!texto.trim() && !imgFile && !audioBlob && !videoUrl) return;
+    if (!texto.trim() && !imgFile && !audioBlob) return;
 
-    const novoID = Date.now();
+    // 1. Adiciona a mensagem do usuário na tela
     const novaMsg = {
-      id: novoID,
+      id: Date.now(),
       texto: texto || "",
       remetente: "usuario",
       imagem: imgFile ? URL.createObjectURL(imgFile) : null,
       audio: audioBlob ? URL.createObjectURL(audioBlob) : null,
-      video: videoUrl || null, // Novo campo de vídeo
     };
 
     setMensagens((prev) => [...prev, novaMsg]);
     setInput("");
 
-    // Lógica da IZA responder
+    // 2. Lógica da IZA
     setTimeout(async () => {
       let novaResposta = "";
       let novoFluxo = fluxo;
 
       if (fluxo === 0) {
-        if (texto.toLowerCase().includes("anônimo") || isAnonimo) {
-          setAnonimo(true);
-          setDados((p) => ({ ...p, nome: "Anônimo" }));
-          novaResposta =
-            "Entendido! O que deseja registrar hoje? (Escolha abaixo)";
-        } else {
-          setDados((p) => ({ ...p, nome: texto }));
-          novaResposta = `Prazer, ${texto}! O que deseja registrar hoje?`;
-        }
+        const nomeUsuario =
+          texto.toLowerCase().includes("anônimo") || isAnonimo
+            ? "Anônimo"
+            : texto;
+        setDados((p) => ({ ...p, nome: nomeUsuario }));
+        novaResposta = `Entendido, ${nomeUsuario}! O que deseja registrar hoje?`;
         novoFluxo = 1;
       } else if (fluxo === 1) {
         setDados((p) => ({ ...p, tipo: texto }));
@@ -321,20 +339,33 @@ function App() {
       } else if (fluxo === 2) {
         setDados((p) => ({ ...p, local: texto }));
         novaResposta =
-          "Entendido. Agora, descreva **o que aconteceu**. \n\nVocê pode usar o **microfone** ou a **filmadora** para relatar:";
+          "Entendido. Agora, descreva **o que aconteceu**. Você pode falar, escrever ou mandar uma foto:";
         novoFluxo = 3;
       } else if (fluxo === 3) {
         if (texto === "CONFIRMADO") {
+          // GERA O PROTOCOLO
           const numProtocolo = Math.floor(
             Math.random() * 900000 + 100000,
           ).toString();
+
+          // SALVA NO ESTADO
           setDados((p) => ({ ...p, protocolo: numProtocolo }));
+
+          // SALVA NO BANCO (SUPABASE)
+          await salvarNoSupabase({
+            protocolo: numProtocolo,
+            relato: dados.relato || "Mídia enviada",
+            tipo: dados.tipo,
+            local: dados.local,
+          });
+
+          // VAI PARA A TELA DE SUCESSO
           setEtapa("protocolo");
           return;
         } else {
           setDados((p) => ({ ...p, relato: texto }));
           novaResposta =
-            "Anotei seu relato. Clique no botão verde abaixo para finalizar.";
+            "Anotei! Agora revise e clique no botão verde para finalizar.";
         }
       }
 
@@ -698,19 +729,6 @@ function App() {
                   🎙️
                 </button>
 
-                {/* Botão de Vídeo */}
-                <button
-                  onClick={gravandoVideo ? pararVideo : iniciarVideo}
-                  className={`p-2 rounded-full text-xl transition-all ${
-                    fluxo === 3
-                      ? gravandoVideo
-                        ? "bg-red-600 text-white animate-pulse"
-                        : "bg-gray-100 hover:bg-gray-200"
-                      : "opacity-20 grayscale cursor-not-allowed"
-                  }`}
-                >
-                  📹
-                </button>
               </div>
 
               {/* Campo de Texto */}
