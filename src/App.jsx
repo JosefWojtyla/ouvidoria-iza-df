@@ -486,11 +486,11 @@ function App() {
   };
   return (
     <div
-      className={`min-h-screen ${cores.bg} transition-all flex flex-col`}
+      className={`fixed inset-0 ${cores.bg} transition-all flex flex-col overflow-hidden`}
       style={{ fontSize: `${fontSize}px` }}
     >
       <header
-        className={`${cores.header} text-white p-4 flex justify-between items-center sticky top-0 z-20 shadow-md`}
+        className={`${cores.header} text-white p-4 flex justify-between items-center z-20 shadow-md flex-shrink-0`}
       >
         <h1 className="font-bold">Ouvidoria DF</h1>
         <div className="flex gap-2">
@@ -516,7 +516,7 @@ function App() {
         </div>
       </header>
 
-      <main className="flex-1 flex flex-col max-w-lg mx-auto w-full p-4 overflow-hidden justify-center">
+      <main className="flex-1 flex flex-col max-w-lg mx-auto w-full overflow-hidden relative">
         {etapa === "inicio" ? (
           <div className="text-center w-full animate-fadeIn">
             <div
