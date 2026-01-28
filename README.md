@@ -62,22 +62,22 @@ Para testar a solução completa e verificar a integração com os serviços:
    git clone [https://github.com/JosefWojtyla/ouvidoria-iza-df.git](https://github.com/JosefWojtyla/ouvidoria-iza-df.git)
 
 ### 2. Acessar a Pasta
-   
-   cd ouvidoria-iza-df
+   ```bash
+   [cd ouvidoria-iza-df]
 
 ### 3. Instalar Dependências
 Certifique-se de ter o Node.js instalado.
-
+   ```bash
    npm install
 
 ### 4. Configurar Variáveis de Ambiente
 Crie um arquivo chamado .env na raiz do projeto e adicione essas chaves do Supabase:
-
+   ```bash
    VITE_SUPABASE_URL= https://fluppxfijamixrmedmzs.supabase.co
    VITE_SUPABASE_ANON_KEY= sb_publishable_eZMNumX1HxuKj5JHIvD6kw_iOYtNd-k
 
 ### 5. Iniciar o App
-
+   ```bash
    npm run dev
 
 Clique no link http://localhost:
