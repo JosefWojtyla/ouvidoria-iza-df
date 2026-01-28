@@ -2,64 +2,56 @@
 
 > **Solução desenvolvida para o 1º Hackathon Participa DF (2026) - Categoria 2 (Ouvidoria)**
 
-A **IZA** é um canal de atendimento inteligente via **PWA** que humaniza a relação entre o cidadão e o Governo do Distrito Federal. Ela transforma formulários complexos em uma conversa simples, acessível e direta.
+A **IZA** é uma plataforma de atendimento inteligente (PWA) criada para humanizar e simplificar a relação entre o cidadão e o Governo do Distrito Federal. Transformamos processos complexos em uma conversa fluida, inclusiva e acessível.
 
 ---
 
-## 🚀 Visão Geral
-Muitos cidadãos desistem de registrar suas demandas pela complexidade dos sistemas atuais. A IZA elimina essas barreiras com uma interface conversacional focada em quem tem pressa ou possui dificuldades técnicas, motoras ou de visão.
-
-## 🌟 Principais Diferenciais
-
-### ♿ 1. Acessibilidade Dinâmica
-* **Ajuste de Fonte:** Controle total do tamanho do texto para usuários com baixa visão.
-* **Alto Contraste:** Interface otimizada para legibilidade máxima em qualquer ambiente.
-* **Design Limpo:** Navegação intuitiva que evita a sobrecarga cognitiva e facilita o uso por idosos.
-
-### 🎙️ 2. Registro Multimídia
-O cidadão relata o problema como preferir, eliminando barreiras de escrita ou analfabetismo funcional:
-* **Áudio:** Registro por voz para maior rapidez e inclusão.
-* **Fotos e Vídeos:** Anexo de imagens e/ou vídeos diretamente no chat para comprovação visual imediata.
-* **Texto:** Fluxo guiado para quem prefere a digitação tradicional.
-
-### 📍 3. Geolocalização Inteligente
-Integração com o **GPS do dispositivo** para marcar o local exato da ocorrência (buracos, falta de iluminação, entulho, etc.), economizando tempo da fiscalização e garantindo precisão ao GDF.
-
-### 🛡️ 4. Transparência e LGPD
-* **Opção de Anonimato:** Segurança para denúncias sensíveis ou medo de retaliação.
-* **Protocolo e PDF:** Geração de número oficial e comprovante para download imediato.
-* **Consulta em Tempo Real:** Acompanhamento do status de análise integrado ao banco de dados.
+## 📺 Demonstração em Vídeo (Obrigatório - Item 8.2.2)
+Assista à demonstração completa das funcionalidades e decisões técnicas:
+👉 **[LINK DO VÍDEO AQUI]**
 
 ---
 
-## 🛠️ Tecnologias Utilizadas
-* **Frontend:** [React.js](https://reactjs.org/) + [Vite](https://vitejs.dev/)
-* **Estilização:** [Tailwind CSS v4](https://tailwindcss.com/)
-* **Backend/Banco de Dados:** [Supabase](https://supabase.com/) (PostgreSQL)
-* **Hospedagem:** [Vercel](https://vercel.com/)
+## 🌟 Diferenciais e Requisitos Atendidos (P1)
+
+### ♿ 1. Acessibilidade Digital (WCAG 2.1 AA)
+* **Controle de Interface:** Ajuste dinâmico de tamanho de fonte e modo de alto contraste.
+* **Navegação Semântica:** Uso de HTML5 semântico e `aria-labels` em todos os botões interativos para total compatibilidade com leitores de tela (TalkBack/VoiceOver).
+* **Design Inclusivo:** Interface limpa para evitar sobrecarga cognitiva.
+
+### 🎙️ 2. Multicanalidade Total
+A IZA permite o registro de manifestações via:
+* **Texto:** Fluxo guiado e intuitivo.
+* **Voz:** Gravação de áudio integrada.
+* **Mídia:** Anexo de fotos e **vídeos** para comprovação visual.
+* **Localização:** Captura automática de coordenadas via GPS para precisão no atendimento.
+
+### 🛡️ 3. Transparência e Segurança
+* **Anonimato Opcional:** O cidadão pode escolher realizar denúncias de forma anônima.
+* **Gestão de Protocolos:** Geração automática de número de protocolo e comprovante em PDF.
+* **Status em Tempo Real:** Consulta direta ao banco de dados para acompanhamento da demanda.
 
 ---
 
-## ⚙️ Guia para os Avaliadores
+## 🛠️ Tecnologias e Arquitetura (P2)
+* **Linguagem:** JavaScript (React.js)
+* **Build Tool:** Vite (Otimizado para PWA)
+* **Estilização:** Tailwind CSS v4
+* **Backend as a Service:** Supabase (PostgreSQL + Storage para mídias)
+* **Hospedagem:** Vercel
 
-Para testar a solução completa e verificar a integração com os serviços:
-
-1. **Acesso:** Utilize a URL pública gerada pela Vercel.
-2. **Registro de Demanda:** - Inicie um relato e aceite os termos da LGPD.
-   - Utilize a função **GPS** para capturar a localização.
-   - Pode nviar uma foto,gravar um áudio e/ou texto.
-3. **Persistência de Dados:** - Após finalizar, anote o número do protocolo.
-   - Vá em **"Consultar Protocolo"** e verifique se os dados salvos batem com o seu relato.
-4. **Simulação de Gestão (Status):** - Como o sistema está conectado ao Supabase, a mudança de status reflete instantaneamente para o cidadão. 
-   - *Nota:* Para fins de avaliação, o status padrão inicial é "Em análise".
+> **Boas Práticas:** O código foi estruturado seguindo princípios de coesão e baixo acoplamento, com separação clara entre lógica de estado (React Hooks) e componentes de interface.
 
 ---
 
-## 💻 Como executar localmente
+## 💻 Como Executar Localmente
 
-1. Clone o repositório:
-   ```bash
-   git clone [https://github.com/JosefWojtyla/ouvidoria-iza-df.git](https://github.com/JosefWojtyla/ouvidoria-iza-df.git)
+Siga os passos para rodar o ambiente de desenvolvimento:
+
+### 1. Clonar o Repositório
+```bash
+git clone [https://github.com/JosefWojtyla/ouvidoria-iza-df.git](https://github.com/JosefWojtyla/ouvidoria-iza-df.git)
+cd ouvidoria-iza-df
 
 2. Acessar a Pasta
    ```bash
