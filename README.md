@@ -19,7 +19,7 @@ Muitos cidadãos desistem de registrar suas demandas pela complexidade dos siste
 ### 🎙️ 2. Registro Multimídia
 O cidadão relata o problema como preferir, eliminando barreiras de escrita ou analfabetismo funcional:
 * **Áudio:** Registro por voz para maior rapidez e inclusão.
-* **Fotos:** Anexo de imagens diretamente no chat para comprovação visual imediata.
+* **Fotos e Vídeos:** Anexo de imagens e/ou vídeos diretamente no chat para comprovação visual imediata.
 * **Texto:** Fluxo guiado para quem prefere a digitação tradicional.
 
 ### 📍 3. Geolocalização Inteligente

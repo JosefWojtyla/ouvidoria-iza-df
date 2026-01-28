@@ -500,19 +500,22 @@ function App() {
         <div className="flex gap-2">
           <button
             onClick={() => setAltoContraste(!altoContraste)}
+            aria-label="Ativar alto contraste"
             className="p-2 rounded-lg font-bold text-[10px] bg-white/20"
           >
             CONTRASTE
           </button>
           <button
             onClick={() => setFontSize(fontSize + 2)}
+            aria-label="Aumentar tamanho do texto"
             className="bg-white/20 px-3 py-1 rounded-lg font-bold"
           >
             A+
           </button>
 
           <button
-            onClick={() => setFontSize(16)} // Define 16px como o padrão
+            onClick={() => setFontSize(16)} 
+            aria-label="Voltar ao tamanho normal"
             className="p-2 rounded-lg font-bold text-[10px] bg-white/20 hover:bg-white/30"
           >
             RESET
@@ -558,12 +561,14 @@ function App() {
               <button
                 onClick={() => setEtapa("chat")}
                 disabled={!aceitoTermos}
+                aria-label="Aceitar termos LGPD"
                 className={`w-full py-4 rounded-2xl font-black ${!aceitoTermos ? "bg-gray-200" : cores.botaoPrincipal}`}
               >
                 COMEÇAR
               </button>
               <button
                 onClick={() => setEtapa("consulta")}
+                aria-label="Consultar Protocolo"
                 className="w-full py-3 mt-3 rounded-2xl font-bold border-2 border-[#005594] text-[#005594] hover:bg-blue-50 transition-all"
               >
                 CONSULTAR PROTOCOLO
@@ -629,6 +634,7 @@ function App() {
                 <div className="flex flex-col gap-2 mt-4 px-2">
                   <button
                     onClick={() => enviarMensagem("Anônimo", true)}
+                    aria-label="Seguir como pessoa anônima"
                     className="w-full bg-gray-800 text-white py-4 rounded-xl font-bold shadow-lg active:scale-95 transition-all"
                   >
                     👤 SEGUIR COMO ANÔNIMO
@@ -649,6 +655,7 @@ function App() {
                       <button
                         key={opt}
                         onClick={() => enviarMensagem(opt)}
+                        aria-label="Botão de enviar"
                         className="bg-white border-2 border-[#005594] text-[#005594] py-3 rounded-xl font-bold hover:bg-blue-50 active:scale-95 transition-all"
                       >
                         {opt}
@@ -664,6 +671,7 @@ function App() {
                     <button
                       onClick={pegarLocalizacaoReal}
                       disabled={localizando}
+                      aria-label="Localização atual"
                       className="w-full mt-2 py-4 rounded-xl font-black bg-blue-50 text-[#005594] border-2 border-[#005594] animate-pulse shadow-md"
                     >
                       📍{" "}
@@ -705,6 +713,7 @@ function App() {
                   </div>
                   <button
                     onClick={() => enviarMensagem("CONFIRMADO")}
+                    aria-label="Finalizar e pegar comprovante"
                     className="w-full py-4 bg-green-600 text-white rounded-b-xl rounded-t-none font-black shadow-2xl border-t-2 border-white/20 active:scale-95 transition-all flex items-center justify-center gap-2"
                   >
                     ✅ FINALIZAR E PEGAR COMPROVANTE
@@ -791,6 +800,7 @@ function App() {
               {/* Botão Enviar */}
               <button
                 onClick={() => enviarMensagem()}
+                aria-label="Enviar"
                 className={`px-4 py-2 rounded-xl font-bold transition-all shadow-md active:scale-95 ${cores.botaoPrincipal}`}
               >
                 ENVIAR
@@ -839,6 +849,7 @@ function App() {
                         "Número de Protocolo não encontrado. Digite novamente",
                       )
                 }
+                aria-label="Buscar protocolo"
                 className="w-full py-4 rounded-2xl font-black text-white bg-[#005594] hover:opacity-90"
               >
                 {buscando ? "BUSCANDO..." : "PESQUISAR"}
@@ -866,6 +877,7 @@ function App() {
 
               <button
                 onClick={() => setEtapa("inicio")}
+                aria-label="Voltar para o inicio"
                 className="mt-6 text-gray-500 underline text-sm block mx-auto"
               >
                 Voltar para o Início
@@ -913,6 +925,7 @@ function App() {
                 {/* BOTÃO DO COMPROVANTE PDF */}
                 <button
                   onClick={gerarComprovante}
+                  aria-label="BAIXAR COMPROVANTE"
                   className="w-full py-4 rounded-2xl font-bold bg-green-600 text-white flex items-center justify-center gap-2 hover:bg-green-700 active:scale-95 transition-all shadow-lg"
                 >
                   📄 BAIXAR COMPROVANTE (PDF)
@@ -939,6 +952,7 @@ function App() {
                       },
                     ]);
                   }}
+                  aria-label="reset"
                   className={`w-full py-4 rounded-2xl font-black shadow-md active:scale-95 transition-all ${cores.botaoPrincipal}`}
                 >
                   NOVA OUVIDORIA
