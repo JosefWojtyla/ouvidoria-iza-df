@@ -88,7 +88,7 @@ Clique no link que aparecerá no seu terminal http://localhost:
 A **IZA** foi desenvolvida como um Progressive Web App, o que significa que você pode instalá-la no seu celular sem precisar da Play Store ou App Store.
 
 ### 🌐 Link de Acesso
-Acesse através do link oficial: [ouvidoria-iza-df.vercel.app]
+Acesse através do link oficial: [CLIQUE AQUI PARA ACESSAR O PROJETO](https://ouvidoria-iza-df.vercel.app)
 
 ### 📥 Passo a passo para Instalação:
 
