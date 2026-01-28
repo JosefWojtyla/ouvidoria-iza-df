@@ -80,4 +80,4 @@ Crie um arquivo chamado .env na raiz do projeto e adicione essas chaves do Supab
    ```bash
    npm run dev
 
-Clique no link http://localhost:
+Clique no link que aparecerá no seu terminal http://localhost:
