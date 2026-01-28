@@ -298,6 +298,10 @@ function App() {
     }
   };
 
+  const dispararUpload = () => {
+    fileInputRef.current.click();
+  };
+
   const enviarMensagem = async (
     textoManual,
     isAnonimo = false,
@@ -339,7 +343,7 @@ function App() {
       } else if (fluxo === 2) {
         setDados((p) => ({ ...p, local: texto }));
         novaResposta =
-          "Entendido. Agora, descreva **o que aconteceu**. Você pode falar, escrever ou mandar uma foto:";
+          "Entendido. Agora, descreva **o que aconteceu**. Você pode falar, escrever ou mandar uma foto/vídeo:";
         novoFluxo = 3;
       } else if (fluxo === 3) {
         if (texto === "CONFIRMADO") {
@@ -713,16 +717,37 @@ function App() {
             <div className="fixed bottom-4 left-1/2 -translate-x-1/2 w-[94%] max-w-lg bg-white p-3 rounded-2xl shadow-[0_-10px_25px_-5px_rgba(0,0,0,0.1)] flex gap-2 items-center border border-gray-100 z-50">
               {/* Botões de Mídia Lateral */}
               <div className="flex gap-1">
-                {/* Botão de Foto */}
+                {/* Botão de Anexo (Imagem e Vídeo) - Unificado */}
                 <button
                   onClick={() =>
                     fluxo === 3
                       ? fileInputRef.current.click()
-                      : alert("Aguarde a etapa final")
+                      : alert(
+                          "Aguarde a etapa de descrição para anexar arquivos.",
+                        )
                   }
-                  className={`p-2 rounded-full text-xl transition-all ${fluxo === 3 ? "bg-gray-100 hover:bg-gray-200" : "opacity-20 grayscale cursor-not-allowed"}`}
+                  type="button"
+                  className={`p-2 rounded-full transition-all ${
+                    fluxo === 3
+                      ? "bg-blue-50 text-blue-600 hover:bg-blue-100"
+                      : "opacity-20 grayscale cursor-not-allowed text-gray-500"
+                  }`}
+                  aria-label="Anexar imagem ou vídeo"
                 >
-                  📷
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    className="h-6 w-6"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13"
+                    />
+                  </svg>
                 </button>
 
                 {/* Botão de Áudio com Touch Fix para Celular */}
@@ -744,6 +769,7 @@ function App() {
                         : "bg-gray-100 text-gray-600 hover:bg-gray-200"
                       : "opacity-20 grayscale cursor-not-allowed"
                   }`}
+                  aria-label="Gravar áudio"
                 >
                   🎙️
                 </button>
@@ -776,10 +802,16 @@ function App() {
                 ref={fileInputRef}
                 onChange={(e) => {
                   const file = e.target.files[0];
-                  if (file) enviarMensagem("📸 Imagem anexada", false, file);
+                  if (file) {
+                    // Identifica se é vídeo ou imagem para mandar a legenda certa
+                    const tipo = file.type.startsWith("video")
+                      ? "🎥 Vídeo"
+                      : "📸 Imagem";
+                    enviarMensagem(`${tipo} anexado(a)`, false, file);
+                  }
                 }}
                 className="hidden"
-                accept="image/*"
+                accept="image/*,video/*"
               />
             </div>
           </div>
