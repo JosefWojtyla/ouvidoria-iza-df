@@ -8,7 +8,7 @@ A **IZA** é uma plataforma de atendimento inteligente (PWA) criada para humaniz
 
 ## 📺 Demonstração em Vídeo (Obrigatório - Item 8.2.2)
 Assista à demonstração completa das funcionalidades e decisões técnicas:
-👉 **[LINK DO VÍDEO AQUI]**
+👉 **[LINK DO VÍDEO]**
 
 ---
 
@@ -48,31 +48,32 @@ A IZA permite o registro de manifestações via:
 
 Siga os passos para rodar o ambiente de desenvolvimento:
 
-### 1. Clonar o Repositório
+1. Clonar o Repositório
 ```bash
 git clone [https://github.com/JosefWojtyla/ouvidoria-iza-df.git](https://github.com/JosefWojtyla/ouvidoria-iza-df.git)
 cd ouvidoria-iza-df
-
+```
 2. Acessar a Pasta
-   ```bash
+```bash
    cd ouvidoria-iza-df
+```
 
 3. Instalar Dependências
 Certifique-se de ter o Node.js instalado.
-   ```bash
+```bash
    npm install
-
+```
 4. Configurar Variáveis de Ambiente
 Crie um arquivo chamado .env na raiz do projeto e adicione essas chaves do Supabase:
-   ```bash
+```bash
    VITE_SUPABASE_URL= https://fluppxfijamixrmedmzs.supabase.co
    VITE_SUPABASE_ANON_KEY= sb_publishable_eZMNumX1HxuKj5JHIvD6kw_iOYtNd-k
-
+```
 5. Iniciar o App
-   ```bash
+```bash
    npm run dev
-
-Clique no link que aparecerá no seu terminal http://localhost:
+```
+Clique no link que aparecerá no seu terminal
 
 
 ## 📱 Como acessar e instalar (PWA)
