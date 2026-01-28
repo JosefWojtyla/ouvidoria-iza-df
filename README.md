@@ -2,48 +2,82 @@
 
 > **Solução desenvolvida para o 1º Hackathon Participa DF (2026) - Categoria 2 (Ouvidoria)**
 
-Um canal de atendimento inteligente via **PWA** que humaniza a relação entre o cidadão e o Governo do Distrito Federal, transformando a burocracia em uma conversa simples e acessível.
+A **IZA** é um canal de atendimento inteligente via **PWA** que humaniza a relação entre o cidadão e o Governo do Distrito Federal. Ela transforma formulários complexos em uma conversa simples, acessível e direta.
 
 ---
 
 ## 🚀 Visão Geral
-A **IZA** facilita o acesso ao Controle Social no Distrito Federal. Entendemos que muitos cidadãos desistem de registrar suas demandas devido à complexidade dos formulários tradicionais ou por possuírem alguma limitação física ou técnica. A IZA elimina essas barreiras através de uma interface conversacional intuitiva.
+Muitos cidadãos desistem de registrar suas demandas pela complexidade dos sistemas atuais. A IZA elimina essas barreiras com uma interface conversacional focada em quem tem pressa ou possui dificuldades técnicas, motoras ou de visão.
 
 ## 🌟 Principais Diferenciais
 
-### ♿ 1. Acessibilidade Extrema
-Criado para ser usado por todos, sem exceção. 
-* **Ajuste de Fonte:** Controle dinâmico do tamanho do texto para baixa visão.
-* **Alto Contraste:** Interface otimizada para daltonismo e legibilidade em ambientes externos.
-* **LIBRAS:** Integração com o widget oficial **VLibras** para tradução em tempo real.
-* **Etiquetas de Tela:** Preparado com `aria-labels` para navegação por voz/leitores de tela (TalkBack/VoiceOver).
+### ♿ 1. Acessibilidade Dinâmica
+* **Ajuste de Fonte:** Controle total do tamanho do texto para usuários com baixa visão.
+* **Alto Contraste:** Interface otimizada para legibilidade máxima em qualquer ambiente.
+* **Design Limpo:** Navegação intuitiva que evita a sobrecarga cognitiva e facilita o uso por idosos.
 
-### 🎙️ 2. Multimédia e Multicanal
-O cidadão relata os problemas da forma que for mais confortável para ele:
-* **Texto:** Chatbot guiado passo a passo.
-* **Áudio e Vídeo:** Opção de registro multimídia para eliminar barreiras de escrita (analfabetismo funcional ou limitações motoras).
-* **Imagens:** Anexo de fotos diretamente no chat para comprovação visual.
+### 🎙️ 2. Registro Multimídia
+O cidadão relata o problema como preferir, eliminando barreiras de escrita ou analfabetismo funcional:
+* **Áudio:** Registro por voz para maior rapidez e inclusão.
+* **Fotos:** Anexo de imagens diretamente no chat para comprovação visual imediata.
+* **Texto:** Fluxo guiado para quem prefere a digitação tradicional.
 
-### 📍 3. Localização Inteligente
-Usa o **GPS do dispositivo** para localizar demandas urbanas (como buracos, falta de iluminação ou problemas em hospitais) com exatidão, facilitando o trabalho da fiscalização do GDF.
+### 📍 3. Geolocalização Inteligente
+Integração com o **GPS do dispositivo** para marcar o local exato da ocorrência (buracos, falta de iluminação, entulho, etc.), economizando tempo da fiscalização e garantindo precisão ao GDF.
 
-### 🛡️ 4. Segurança, Sigilo e LGPD
-* **Anonimato:** Opção de denúncia anônima para garantir a segurança do denunciante em casos sensíveis.
-* **Conformidade LGPD:** Termo de aceite e privacidade implementado no primeiro acesso.
-* **Download de Protocolo:** Geração automática de comprovante para acompanhamento oficial.
+### 🛡️ 4. Transparência e LGPD
+* **Opção de Anonimato:** Segurança para denúncias sensíveis ou medo de retaliação.
+* **Protocolo e PDF:** Geração de número oficial e comprovante para download imediato.
+* **Consulta em Tempo Real:** Acompanhamento do status de análise integrado ao banco de dados.
 
 ---
 
 ## 🛠️ Tecnologias Utilizadas
-* [React.js](https://reactjs.org/) + [Vite](https://vitejs.dev/)
-* [Tailwind CSS v4](https://tailwindcss.com/)
-* [PWA Capabilities](https://web.dev/progressive-web-apps/)
-* [VLibras Plugin](https://vlibras.gov.br/)
+* **Frontend:** [React.js](https://reactjs.org/) + [Vite](https://vitejs.dev/)
+* **Estilização:** [Tailwind CSS v4](https://tailwindcss.com/)
+* **Backend/Banco de Dados:** [Supabase](https://supabase.com/) (PostgreSQL)
+* **Hospedagem:** [Vercel](https://vercel.com/)
 
 ---
 
-## ⚙️ Como executar o projeto localmente
+## ⚙️ Guia para os Avaliadores
+
+Para testar a solução completa e verificar a integração com os serviços:
+
+1. **Acesso:** Utilize a URL pública gerada pela Vercel.
+2. **Registro de Demanda:** - Inicie um relato e aceite os termos da LGPD.
+   - Utilize a função **GPS** para capturar a localização.
+   - Pode nviar uma foto,gravar um áudio e/ou texto.
+3. **Persistência de Dados:** - Após finalizar, anote o número do protocolo.
+   - Vá em **"Consultar Protocolo"** e verifique se os dados salvos batem com o seu relato.
+4. **Simulação de Gestão (Status):** - Como o sistema está conectado ao Supabase, a mudança de status reflete instantaneamente para o cidadão. 
+   - *Nota:* Para fins de avaliação, o status padrão inicial é "Em análise".
+
+---
+
+## 💻 Como executar localmente
 
 1. Clone o repositório:
    ```bash
-   git clone [https://github.com/SEU_USUARIO/NOME_DO_REPO.git](https://github.com/SEU_USUARIO/NOME_DO_REPO.git)
+   git clone [https://github.com/JosefWojtyla/ouvidoria-iza-df.git](https://github.com/JosefWojtyla/ouvidoria-iza-df.git)
+
+### 2. Acessar a Pasta
+   
+   cd ouvidoria-iza-df
+
+### 3. Instalar Dependências
+Certifique-se de ter o Node.js instalado.
+
+   npm install
+
+### 4. Configurar Variáveis de Ambiente
+Crie um arquivo chamado .env na raiz do projeto e adicione essas chaves do Supabase:
+
+   VITE_SUPABASE_URL= https://fluppxfijamixrmedmzs.supabase.co
+   VITE_SUPABASE_ANON_KEY= sb_publishable_eZMNumX1HxuKj5JHIvD6kw_iOYtNd-k
+
+### 5. Iniciar o App
+
+   npm run dev
+
+Clique no link http://localhost:
