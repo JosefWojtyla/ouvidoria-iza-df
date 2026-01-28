@@ -1,5 +1,5 @@
 import { defineConfig } from 'vite'
-import react from '@vitejs/plugin-react' // O segredo está aqui!
+import react from '@vitejs/plugin-react'
 import { VitePWA } from 'vite-plugin-pwa'
 
 export default defineConfig({
@@ -7,26 +7,20 @@ export default defineConfig({
     react(),
     VitePWA({
       registerType: 'autoUpdate',
-      includeAssets: ['favicon.ico', 'apple-touch-icon.png', 'masked-icon.svg'],
+      includeAssets: ['favicon.ico', 'apple-touch-icon.png', 'mask-icon.svg'],
       manifest: {
         name: 'IZA - Ouvidoria Digital DF',
         short_name: 'IZA',
-        description: 'Assistente Virtual de Ouvidoria do Distrito Federal',
+        description: 'Assistente Virtual de Ouvidoria para o DF',
         theme_color: '#005594',
         background_color: '#ffffff',
-        display: 'standalone',
+        display: 'standalone', // <--- ISSO AQUI TIRA A BARRA DO NAVEGADOR
         start_url: '/',
         icons: [
           {
-            src: 'pwa-192x192.png',
-            sizes: '192x192',
-            type: 'image/png'
-          },
-          {
-            src: 'pwa-512x512.png',
+            src: 'https://cdn-icons-png.flaticon.com/512/2593/2593635.png',
             sizes: '512x512',
-            type: 'image/png',
-            purpose: 'any maskable'
+            type: 'image/png'
           }
         ]
       }

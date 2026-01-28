@@ -81,3 +81,25 @@ Crie um arquivo chamado .env na raiz do projeto e adicione essas chaves do Supab
    npm run dev
 
 Clique no link que aparecerá no seu terminal http://localhost:
+
+
+## 📱 Como acessar e instalar (PWA)
+
+A **IZA** foi desenvolvida como um Progressive Web App, o que significa que você pode instalá-la no seu celular sem precisar da Play Store ou App Store.
+
+### 🌐 Link de Acesso
+Acesse através do link oficial: [CLIQUE AQUI PARA ACESSAR O PROJETO](ouvidoria-iza-df.vercel.app)
+
+### 📥 Passo a passo para Instalação:
+
+#### **No Android (Google Chrome):**
+1. Acesse o link acima pelo navegador.
+2. Toque nos **três pontinhos** no canto superior direito.
+3. Selecione **"Instalar aplicativo"** ou **"Adicionar à tela inicial"**.
+4. Confirme a instalação. O ícone da IZA aparecerá junto aos seus outros apps!
+
+#### **No iPhone (Safari):**
+1. Acesse o link acima pelo Safari.
+2. Toque no botão de **Compartilhar** (ícone do quadrado com uma seta para cima).
+3. Role a lista para baixo e toque em **"Adicionar à Tela de Início"**.
+4. Toque em **Adicionar** no canto superior direito.
