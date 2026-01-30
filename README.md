@@ -6,34 +6,34 @@ A **IZA** é uma plataforma de atendimento inteligente (PWA) criada para humaniz
 
 ---
 
-## 📺 Demonstração em Vídeo (Obrigatório - Item 8.2.2)
+##  Demonstração em Vídeo (Obrigatório - Item 8.2.2)
 Assista à demonstração completa das funcionalidades e decisões técnicas:
-👉 **[LINK DO VÍDEO]**
+ **[LINK DO VÍDEO]**
 
 ---
 
-## 🌟 Diferenciais e Requisitos Atendidos (P1)
+##  Diferenciais e Requisitos Atendidos (P1)
 
-### ♿ 1. Acessibilidade Digital (WCAG 2.1 AA)
+###  1. Acessibilidade Digital (WCAG 2.1 AA)
 * **Controle de Interface:** Ajuste dinâmico de tamanho de fonte e modo de alto contraste.
 * **Navegação Semântica:** Uso de HTML5 semântico e `aria-labels` em todos os botões interativos para total compatibilidade com leitores de tela (TalkBack/VoiceOver).
 * **Design Inclusivo:** Interface limpa para evitar sobrecarga cognitiva.
 
-### 🎙️ 2. Multicanalidade Total
+###  2. Multicanalidade Total
 A IZA permite o registro de manifestações via:
 * **Texto:** Fluxo guiado e intuitivo.
 * **Voz:** Gravação de áudio integrada.
 * **Mídia:** Anexo de fotos e **vídeos** para comprovação visual.
 * **Localização:** Captura automática de coordenadas via GPS para precisão no atendimento.
 
-### 🛡️ 3. Transparência e Segurança
+###  3. Transparência e Segurança
 * **Anonimato Opcional:** O cidadão pode escolher realizar denúncias de forma anônima.
 * **Gestão de Protocolos:** Geração automática de número de protocolo e comprovante em PDF.
 * **Status em Tempo Real:** Consulta direta ao banco de dados para acompanhamento da demanda.
 
 ---
 
-## 🛠️ Tecnologias e Arquitetura (P2)
+##  Tecnologias e Arquitetura (P2)
 * **Linguagem:** JavaScript (React.js)
 * **Build Tool:** Vite (Otimizado para PWA)
 * **Estilização:** Tailwind CSS v4
@@ -44,7 +44,7 @@ A IZA permite o registro de manifestações via:
 
 ---
 
-## 💻 Como Executar Localmente
+##  Como Executar Localmente
 
 Siga os passos para rodar o ambiente de desenvolvimento:
 
@@ -76,14 +76,14 @@ Crie um arquivo chamado .env na raiz do projeto e adicione essas chaves do Supab
 Clique no link que aparecerá no seu terminal
 
 
-## 📱 Como acessar e instalar (PWA)
+##  Como acessar e instalar (PWA)
 
 A **IZA** foi desenvolvida como um Progressive Web App, o que significa que você pode instalá-la no seu celular sem precisar da Play Store ou App Store.
 
-### 🌐 Link de Acesso
+###  Link de Acesso
 Acesse através do link oficial: [CLIQUE AQUI PARA ACESSAR O PROJETO](https://ouvidoria-iza-df.vercel.app)
 
-### 📥 Passo a passo para Instalação:
+###  Passo a passo para Instalação:
 
 #### **No Android (Google Chrome):**
 1. Acesse o link acima pelo navegador.
