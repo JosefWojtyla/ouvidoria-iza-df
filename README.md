@@ -8,7 +8,7 @@ A **IZA** é uma plataforma de atendimento inteligente (PWA) criada para humaniz
 
 ##  Demonstração em Vídeo (Obrigatório - Item 8.2.2)
 Assista à demonstração completa das funcionalidades e decisões técnicas:
- **[LINK DO VÍDEO]**
+ **[[LINK DO VÍDEO](https://youtu.be/enHV5KHJ9eU)]**
 
 ---
 
